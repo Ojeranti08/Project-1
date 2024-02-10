@@ -1,5 +1,5 @@
 pipeline {
-    agent Node1
+    agent any
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('ojeranti08-dockerhub')
