@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('ojeranti08-dockerhub')
@@ -39,7 +39,7 @@ pipeline {
                 }
             }
         }
-        
+
                    stage('Login to DockerHub'){
                      steps{
                         withCredentials([usernamePassword(credentialsId: 'ojeranti08-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIAL_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]){
