@@ -18,7 +18,7 @@ pipeline {
 
         stage('Build and Test'){
             agent {
-                label "JavaApp"
+                label "Node1"
             }
             steps {
                 echo "Build and Test"
