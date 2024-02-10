@@ -8,7 +8,7 @@ pipeline {
         TOMCAT_SERVER_LABEL   = 'Node2'
     }
 
-        stages {
+    stages {
         stage('SCM Checkout') {
             agent any
             steps {
@@ -28,44 +28,44 @@ pipeline {
         }
     }
 
-        stage('Build Docker Image'){
-            steps {
-                script {
-                    // Remove Unused Docker image' to avoid conflicts
-                    sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER"
-                    sh "docker rmi $DOCKER_IMAGE_NAME:latest"
-                    // Build Docker image
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}."
-                }
+    stage('Build Docker Image'){
+        steps {
+            script {
+                // Remove Unused Docker image' to avoid conflicts
+                sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER"
+                sh "docker rmi $DOCKER_IMAGE_NAME:latest"
+                // Build Docker image
+                sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}."
             }
         }
+    }
 
-                   stage('Login to DockerHub'){
-                     steps{
-                        withCredentials([usernamePassword(credentialsId: 'ojeranti08-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIAL_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]){
-                            sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-                           }
-                        }
-                    }
-
-                stage('Push Image to DockerHub'){
-                    steps{
-                        sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-                    }
-                }
-
-        stage('Deploying to Tomcat') {
-            agent {
-                label "${TOMCAT_SERVER_LABEL}"
-            }
-            steps {
-                echo "Deploying Docker image to Tomcat"
-                script {
-                    // Run the Docker image to Tomcat
-                    sh "docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-                }
+    stage('Login to DockerHub'){
+        steps{
+            withCredentials([usernamePassword(credentialsId: 'ojeranti08-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIAL_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]){
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
             }
         }
+    }
+
+    stage('Push Image to DockerHub'){
+        steps{
+            sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+        }
+    }
+
+    stage('Deploying to Tomcat') {
+       agent {
+           label "${TOMCAT_SERVER_LABEL}"
+       }
+       steps {
+          echo "Deploying Docker image to Tomcat"
+          script {
+              // Run the Docker image to Tomcat
+              sh "docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+           }
+        }
+    }
 
     stage('Clean Up'){
         steps{
