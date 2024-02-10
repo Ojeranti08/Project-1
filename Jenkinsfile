@@ -17,7 +17,9 @@ pipeline {
         }
 
         stage('Build and Test'){
-            agent any
+            agent {
+                label "Node1"
+            }
             tools {
                 maven 'apache-maven-3.9.5' // Specify the Maven installation name configured in Jenkins
     }
