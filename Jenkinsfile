@@ -17,9 +17,7 @@ pipeline {
         }
 
         stage('Build and Test'){
-            agent {
-                label "JavaApp"
-            }
+            agent any
             steps {
                 echo "Build and Test"
                 sh "mvn clean test"
