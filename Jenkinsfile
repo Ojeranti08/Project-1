@@ -18,6 +18,9 @@ pipeline {
 
         stage('Build and Test'){
             agent any
+            tools {
+                maven 'apache-maven-3.9.5' // Specify the Maven installation name configured in Jenkins
+    }
             steps {
                 echo "Build and Test"
                 sh "mvn clean test"
