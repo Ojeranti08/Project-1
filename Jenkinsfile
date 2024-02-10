@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent Node1
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('ojeranti08-dockerhub')
@@ -10,7 +10,7 @@ pipeline {
 
     stages {
         stage('SCM Checkout') {
-            agent any
+            agent Node1
             steps {
                 git 'https://github.com/Ojeranti08/Project-1.git'
             }
