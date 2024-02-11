@@ -28,7 +28,9 @@ pipeline {
         }
 
         stage('Build and Test'){
-            agent any
+            agent {
+                label "Node1"
+            }
             steps {
                 echo "Build and Test"
                 sh "mvn clean test"
