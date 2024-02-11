@@ -10,9 +10,10 @@ pipeline {
 
     stages {
         stage('SCM Checkout') {
-            agent any
             steps {
-                git 'https://github.com/Ojeranti08/Project-1.git', branch: 'main'
+                script {
+                    git tool: 'Default', credentialsId: 'git-creds', url: 'https://github.com/Ojeranti08/Project-1.git', branch: 'main'
+                }
             }
         }
 
