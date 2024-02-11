@@ -44,10 +44,10 @@ pipeline {
             steps {
                 script {
                     // Remove Unused Docker image' to avoid conflicts
-                    sh "sudo docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER"
-                    sh "sudo docker rmi $DOCKER_IMAGE_NAME:latest"
+                    sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER"
+                    sh "docker rmi $DOCKER_IMAGE_NAME:latest"
                     // Build Docker image
-                    sh "sudo docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ."
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ."
                 }
             }
         }
@@ -56,7 +56,7 @@ pipeline {
             agent any
             steps {
                 withCredentials([usernamePassword(credentialsId: 'ojeranti08-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIAL_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]){
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
                 }
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Push Image to DockerHub'){
             agent any
             steps {
-                sh "sudo docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
             }
         }
 
@@ -74,7 +74,7 @@ pipeline {
                 echo "Deploying Docker image to Tomcat"
                 script {
                     // Run the Docker image to Tomcat
-                    sh "sudo docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                    sh "docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                 }
             }
         }
@@ -82,7 +82,7 @@ pipeline {
         stage('Clean Up'){
             agent any
             steps {
-                sh 'sudo docker logout'
+                sh "docker logout"
             }
         }
     }
