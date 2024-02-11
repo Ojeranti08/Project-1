@@ -33,7 +33,7 @@ pipeline {
             }
             steps {
                 echo "Build and Test"
-                sh "mvn clean test"
+                sh "mvn clean package"
                 stash(name:"javaapp", includes:"target/*.war")
             }
         }
