@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('ojeranti08-dockerhub')
@@ -33,58 +33,72 @@ pipeline {
             }
             steps {
                 echo "Build and Test"
-                sh "mvn clean package"
+                sh "mvn test"
                 stash(name:"javaapp", includes:"target/*.war")
             }
         }
 
-        stage('Build Docker Image'){
-            agent any
+        stage('Deploying to Tomcat-server') {
+            agent {
+                label "Node2"
+            }
+            steps {
+              echo "Deploying the application"
+               //Define deployment steps here
+                unstash "javaapp" 
+                sh "/home/centos/apache-tomcat-7.0.94/bin/startup.sh"
+                sh "sudo rm -rf ~/apache*/webapp/*.war"
+                sh "sudo mkdir -p /home/centos/apache*/webapps/"
+                sh "sudo mv target/.war ~/apache*/webapps/"
+                sh "sudo systemctl daemon-reload"
+                sh "/home/centos/apache-tomcat-7.0.94/bin/startup.sh"
+            }
+        }
+    }
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Remove Unused Docker image' to avoid conflicts
-                    sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER"
-                    sh "docker rmi $DOCKER_IMAGE_NAME:latest"
                     // Build Docker image
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ."
+                    sh "docker build -t ojeranti08/javaapp:1.3.5 ."
                 }
             }
         }
 
-        stage('Login to DockerHub'){
-            agent any
+        stage('Login and Push Image to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'ojeranti08-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIAL_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]){
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-                }
-            }
-        }
-
-        stage('Push Image to DockerHub'){
-            agent any
-            steps {
-                sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-            }
-        }
-
-        stage('Deploying to Tomcat') {
-            agent any
-            steps {
-                echo "Deploying Docker image to Tomcat"
                 script {
-                    // Run the Docker image to Tomcat
-                    sh "docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                    withCredentials([string(credentialsId:'docker-pwd', variable: 'dockerHubPwd')]) {
+                    sh "docker login -u ojeranti08 -p ${dockerHubPwd}"
+                    sh "docker push ojeranti08/javaapp:1.3.5"
+                    }
                 }
             }
         }
+    }
 
+        stage ('Run Container on Tomcat-server') {
+            steps {
+                script {
+                    def containerName = "javaApp-${env.BUILD_ID}-${new Date().format("yyyMMdd-HHmmss)}"
+                    // Stop and remove exiting container if it exits
+                    sh "docker stop ${containerName} | true"
+                    sh "docker rm ${containerName} | true" 
+                    //  Build and run the new container with the unique name
+                    def dockerRun = "docker container run -dt --name ${containerName}javaapp -p 8080:8080 ojeranti08/javaapp:1.3.5"
+                    sshagent(['javaapp']){
+                        sh "ssh -o StrictHostChecking=no centos@34.201.24.211 ${dockerRun}"
+                    }
+                }
+            }
+        }
+        
         stage('Clean Up'){
             agent any
             steps {
                 sh "docker logout"
             }
         }
-    }
 
     post {
         success {
@@ -92,10 +106,10 @@ pipeline {
                  subject: "Build and Deployment Successful - ${currentBuild.fullDisplayName}",
                  body: "Congratulations! The build and deployment were successful.\n\nCheck console output at ${BUILD_URL}"
         } 
+
         failure {
             mail to: "Kemiola190@gmail.com",
                  subject: "Build and Deployment Failed - ${currentBuild.fullDisplayName}",
                  body: "Oops! The build and deployment failed.\n\nCheck console output at ${BUILD_URL}" 
         }
     } 
-}
