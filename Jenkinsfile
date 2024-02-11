@@ -30,7 +30,7 @@ pipeline {
         stage('Build and Test'){
             agent any
                 tools {
-                    maven 'Apache-Maven-3.9.5'
+                    maven 'apache-maven-3.9.5'
                 }
             steps {
                 echo "Build and Test"
