@@ -17,15 +17,15 @@ pipeline {
             }
         }
 
-        stage('Mvn Package') {
-            steps {
-                script {
-                    def mvnHome = tool name: 'apache-maven-3.9.5', type: 'maven'
-                    def mvnCMD = "${mvnHome}/bin/mvn"
-                    sh "${mvnCMD} clean package"
-                }
-            }
-        }
+        #stage('Mvn Package') {
+           # steps {
+                #script {
+                    #def mvnHome = tool name: 'apache-maven-3.9.5', type: 'maven'
+                    #def mvnCMD = "${mvnHome}/bin/mvn"
+                    #sh "${mvnCMD} clean package"
+               # }
+           # }
+        #}
 
         stage('Build and Test'){
             agent {
