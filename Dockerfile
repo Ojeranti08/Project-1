@@ -7,5 +7,5 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Copy the WAR file from the target directory to Tomcat webapps
 COPY target/*.war /usr/local/tomcat/webapps/
 
-#EXPOSE 8080
+EXPOSE 8080
 #CMD ["catalina.sh", "run"]
