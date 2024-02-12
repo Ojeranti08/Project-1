@@ -49,10 +49,9 @@ pipeline {
         stage('Login and Push Image to DockerHub') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'my-secret-file', variable: 'SECRET_FILE')]) {
-                        // some block
-                        sh 'echo "Secret file contents: ${SECRET_FILE}"'
-                        sh 'cat $SECRET_FILE | docker login -u ojeranti08 --password-stdin'
+                    withCredentials([string(credentialsId: '', variable: 'dockerHubPwd')]) {
+                        sh 'sudo docker login -u ojeranti08 -p $dockerHubPwd'
+                        //sh 'cat $docker-pwd | docker login -u ojeranti08 --password-stdin'
                         sh 'docker tag ojeranti08/javaapp:1.3.5 ojeranti08/javaapp:latest'
                         sh 'docker push ojeranti08/javaapp:1.3.5'
                         sh 'docker push ojeranti08/javaapp:latest'
