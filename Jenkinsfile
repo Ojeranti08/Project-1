@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    sh 'sudo docker build -t ojeranti08/javaapp:1.3.5 .'
+                    sh 'sudo /usr/bin/docker build -t ojeranti08/javaapp:1.3.5 .'
                 }
             }
         }
