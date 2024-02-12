@@ -15,7 +15,7 @@ pipeline {
         stage('Build and Test'){
             steps {
                 echo "Build and Test"
-                sh "mvn test"
+                sh "mvn clean package"
                 stash(name:"javaapp", includes:"target/*.war")
             }
         }
