@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    sh "sudo docker build -t ojeranti08/javaapp:1.3.5 ."
+                    sh 'sudo docker build -t ojeranti08/javaapp:1.3.5 .'
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId:'docker-pwd', variable: 'dockerHubPwd')]) {
                         sh "sudo docker login -u ojeranti08 -p ${dockerHubPwd}"
-                        sh "sudo docker push ojeranti08/javaapp:1.3.5"
+                        sh 'sudo docker push ojeranti08/javaapp:1.3.5'
                     }
                 }
             }
