@@ -50,6 +50,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'my-secret-file', variable: 'SECRET_FILE')]) {
+                        // some block
                         sh 'echo "Secret file contents: ${SECRET_FILE}"'
                         sh 'cat $SECRET_FILE | docker login -u ojeranti08 --password-stdin'
                         sh 'docker tag ojeranti08/javaapp:1.3.5 ojeranti08/javaapp:latest'
