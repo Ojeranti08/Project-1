@@ -2,7 +2,7 @@ pipeline {
     agent {
         label "Node1"
     } 
-    
+
     stages {
         stage('SCM Checkout') {
             steps {
@@ -13,9 +13,6 @@ pipeline {
         }
 
         stage('Build and Test'){
-            agent {
-                label "Node1"
-            }
             steps {
                 echo "Build and Test"
                 sh "mvn test"
