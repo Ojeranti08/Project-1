@@ -49,7 +49,7 @@ pipeline {
         stage('Login and Push Image to DockerHub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: '', variable: 'dockerHubPwd')]) {
+                    withCredentials([string(credentialsId: 'dockerHubPwd', variable: 'dockerHubPwd')]) {
                         sh 'sudo docker login -u ojeranti08 -p $dockerHubPwd'
                         //sh 'cat $docker-pwd | docker login -u ojeranti08 --password-stdin'
                         sh 'docker tag ojeranti08/javaapp:1.3.5 ojeranti08/javaapp:latest'
