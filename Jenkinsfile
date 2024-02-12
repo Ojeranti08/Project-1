@@ -1,5 +1,8 @@
 pipeline {
-    agent none
+    agent {
+        label "Node1"
+    } 
+    
     stages {
         stage('SCM Checkout') {
             steps {
