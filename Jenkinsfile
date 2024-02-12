@@ -50,8 +50,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId:'docker-pwd', variable: 'dockerHubPwd')]) {
-                        sh 'docker login -u ojeranti08 -p $dockerHubPwd'
-                        sh 'docker push ojeranti08/javaapp:1.3.5'
+                        sh 'sudo docker login -u ojeranti08 -p $dockerHubPwd'
+                        sh 'sudo docker tag ojeranti08/javaapp:1.3.5 ojeranti08/javaapp:latest'
+                        sh 'sudo docker push ojeranti08/javaapp:1.3.5'
+                        sh 'sudo docker push ojeranti08/javaapp:latest'
                     }
                 }
             }
