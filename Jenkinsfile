@@ -1,12 +1,12 @@
 pipeline {
     agent none
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('ojeranti08-dockerhub')
-        DOCKER_IMAGE_NAME     = 'ojeranti08/javaapp'
-        CONTAINER_NAME        = 'javaapp'
-        TOMCAT_SERVER_LABEL   = 'Node2'
-    }
+    #environment {
+        #DOCKERHUB_CREDENTIALS = credentials('ojeranti08-dockerhub')
+        #DOCKER_IMAGE_NAME     = 'ojeranti08/javaapp'
+        #CONTAINER_NAME        = 'javaapp'
+        #TOMCAT_SERVER_LABEL   = 'Node2'
+   # }
 
     stages {
         stage('SCM Checkout') {
