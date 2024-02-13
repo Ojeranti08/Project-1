@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                      withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'dckr_pat_guzJDGc-N-yCdgy27ltMBcRR56E', usernameVariable: 'ojeranti08')]) { 
-                        sh "echo ${dockerHubPwd} | docker login -u ojeranti08 -p ${dckr_pat_guzJDGc-N-yCdgy27ltMBcRR56E}"
+                        sh "echo ${dckr_pat_guzJDGc-N-yCdgy27ltMBcRR56E} | sudo docker login -u ojeranti08 --password-stdin"
                         //sh 'cat $docker-pwd | docker login -u ojeranti08 --password-stdin'
                         //sh 'docker tag ojeranti08/javaapp:1.3.5 ojeranti08/javaapp:latest'
                         sh 'docker push ojeranti08/javaapp:1.3.5'
