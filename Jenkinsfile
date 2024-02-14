@@ -60,7 +60,7 @@ pipeline {
         stage ('Run Container on Tomcat-server') {
             steps {
                 script {
-                    def containerName = "javaApp-${env.BUILD_ID}-${new Date().format("yyyyMMdd-HHmmss")}"
+                    def containerName = "javaapp-${env.BUILD_ID}-${new Date().format("yyyyMMdd-HHmmss")}"
                     // Stop and remove existing container if it exists
                     sh "sudo docker stop ${containerName} || true"
                     sh "sudo docker container rm -f ${containerName} || true" 
