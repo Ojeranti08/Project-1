@@ -52,37 +52,6 @@ resource "aws_instance" "tomcat" {
 }
 
 # Containerised Based Java Project
-resource "aws_instance" "Jenkins" {
-  ami                    = "ami-002070d43b0a4f171"
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.javaapp-public-subnet.id
-  key_name               = "Oje"
-  vpc_security_group_ids = [aws_security_group.javaapp-sg.id]
-  user_data              = <<-EOF
-  #!/bin/bash
-   sudo yum update -y
-   sudo yum install -y wget java-11*
-   sudo wget -O /etc/yum.repos.d/jenkins.repo \
-       https://pkg.jenkins.io/redhat-stable/jenkins.repo
-   sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-   sudo yum install -y jenkins
-   java -version
-   sudo systemctl start jenkins
-   echo "Enabling Jenkins to start on boot:"
-   sudo systemctl enable jenkins
-   echo "Jenkins service status:"
-   sudo systemctl status jenkins
-   sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-   # echo "Jenkins initial admin password: $jenkins_password"
-   echo "Jenkins is now installed and running. Access it at http://your-server-ip:8080"
-  EOF
-  private_ip             = "10.0.1.15"
-
-  tags = {
-    Name = " Jenkins"
-  }
-}
-
 resource "aws_instance" "Jenkins1" {
   ami                    = "ami-002070d43b0a4f171"
   instance_type          = "t2.medium"
